@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Survey questions</title>
+	<!-- Latest compiled and minified CSS & JS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Welcome, dog friend!</h1>
+				<h3>Please answer the following questions. If English is not your primary language, you may enlist the help of your caretaker.</h3>
+				<hr>
+				<h2><strong>About You</strong></h2>
+				
+				<h4>Name (required)</h4>
+				<input type="text" id="name" name='name' class="form-control" required>
+				
+				<h4>Link to Photo Image (required)</h4>
+				<input type="text" id="photo" name='photo' class="form-control" required>
+				<hr>
+
+				<h3><strong>Question 1</strong></h3>
+				<h4>I feel at peace with my life</h4>
+				<select name="question1" id="q1" class="select" required>
+					<option value="1">1 (Strongly Agree)</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5 (Strongly Disagree</option>
+				</select>
+
+				<h3><strong>Question 2</strong></h3>
+				<h4>Spirituality is important to me</h4>
+				<select name="question2" id="q2" class="select">
+					<option value="1">1 (Strongly Agree)</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5 (Strongly Disagree</option>
+				</select>
+
+				<h3><strong>Question 3</strong></h3>
+				<h4>Carthago delenda est</h4>
+				<select name="question3" id="q3" class="select">
+					<option value="1">1 (Strongly Agree)</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5 (Strongly Disagree</option>
+				</select>
+				
+				<h3><strong>Question 4</strong></h3>
+				<h4>The unexamined life is not worth living</h4>
+				<select name="question4" id="q4" class="select">
+					<option value="1">1 (Strongly Agree)</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5 (Strongly Disagree</option>
+				</select>
+
+				<h3><strong>Question 5</strong></h3>
+				<h4>I believe the children are our future</h4>
+				<select name="question5" id="q5" class="select">
+					<option value="1">1 (Strongly Agree)</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5 (Strongly Disagree</option>
+				</select>
+
+				<hr>
+				<button type="submit" class="btn btn-danger btn-block" id="submit">
+				<span class='glyphicon glyphicon-heart'></span> Submit!</button>
+				
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	function submitAnswers(){
+		var scores = [];
+
+		$('#submit').on('click', function(){
+			var q1 = $('#q1').val();
+			var q2 = $('#q2').val();
+			var q3 = $('#q3').val();
+			var q4 = $('#q4').val();
+			var q5 = $('#q5').val();
+			scores = [q1, q2, q3, q4, q5];
+
+			var userInfo = {
+				userName: $('#name').val().trim(),
+				userPhoto: $('#photo').val().trim(),
+				userScores: scores
+			};
+
+			
+			var currentURL = window.location.origin;
+
+
+			$.ajax({
+				type: 'POST',
+				url: currentURL + "/api/data",
+				data: userInfo,
+				dataType: 'json',
+				success: function(data){
+					scores = [];
+					alert(data.userName);
+				}
+			});
+
+
+			// $.post(currentURL + "/api/data", userInfo, function(data){
+			// 	scores = [];
+			// 	alert(data.userName);
+			// });
+
+
+			$('#name').val('');
+			$('#photo').val('');
+			$('#q1').val('1');
+			$('#q2').val('1');
+			$('#q3').val('1');
+			$('#q4').val('1');
+			$('#q5').val('1');
+
+		});
+		return false;
+	}
+
+	submitAnswers();
+</script>
+</html>
+

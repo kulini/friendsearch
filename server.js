@@ -6,8 +6,9 @@ var path = require('path');
 //create an instance of express()
 var app = express();
 
-//array of user info
+//database of user info
 var infoArray = [];
+
 //parse POST requests
 app.use(bodyParser.json()); 	//support json bodies
 app.use(bodyParser.urlencoded({ extended: true })); //support url-encoded bodies
@@ -26,7 +27,7 @@ app.listen(PORT, function(){
 
 // app.use('/static', express.static(__dirname + '/app/public'));
 
-//use path module to display images
+//use path module to use the correct path to display images
 app.use(express.static(path.join(__dirname, '/app/public')));
 
 //run this function in response to http get request for the root directory
@@ -47,6 +48,7 @@ app.post('/api/data', function(req, res){
 	var mydata = req.body;
 	processData(mydata, infoArray, displayDiffarray, res);
 	infoArray.push(mydata);
+	//test
 	res.json(mydata);
 });
 

@@ -2,12 +2,42 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
-
+var friends = require('./app/data/friends.js');
 //create an instance of express()
 var app = express();
 
-//database of user info
-var infoArray = [];
+var infoArray = friends.infoArray;
+//database array of user info
+// var infoArray = [{
+// 	"userName": "Mickey", 
+// 	"userPhoto": "http://imgur.com/YNmv6PU.jpg", 
+// 	"userScores": [1,1,1,1,1]
+// 	},
+
+// 	{
+// 		"userName": "Minnie",
+// 		"userPhoto": "http://i.imgur.com/JXUZybx.jpg",
+// 		"userScores": [2,2,2,2,2]
+// 	}, 
+
+// 	{
+// 		"userName": "Sammy",
+// 		"userPhoto": "http://animalsbreeds.com/wp-content/uploads/2014/07/Dachshund-6.jpg",
+// 		"userScores": [3,3,3,3,3]
+// 	},
+
+// 	{
+// 		"userName": "Van Halen",
+// 		"userPhoto": "http://images.mentalfloss.com/sites/default/files/styles/article_640x430/public/istock_000009655750_small.jpg",
+// 		"userScores": [4,4,4,4,4]
+// 	},
+
+// 	{
+// 		"userName": "Homer",
+// 		"userPhoto": "http://www.yourpurebredpuppy.com/dogbreeds/photos-CD/dalmatiansf6.jpg",
+// 		"userScores": [5,5,5,5,5]
+// 	}
+// 	];
 
 //parse POST requests
 app.use(bodyParser.json()); 	//support json bodies
@@ -45,21 +75,30 @@ app.get('/api', function(req, res){
 });
 
 app.post('/api/data', function(req, res){
+	//the data posted by the client in the ajax post call
 	var mydata = req.body;
-	processData(mydata, infoArray, displayDiffarray, res);
+	//data sent back to client as best match
+	res.json(processData(mydata,infoArray));
+	//add client data (mydata) to the db (infoArray)
 	infoArray.push(mydata);
-	//test
-	res.json(mydata);
+
 });
 
 
+function processData(mydata, infoArray){
+	//the number of questions in the survey
+	var numberOfQs = 5;
+	//with each loop, bestMatch will be updated if the user in db (infoArray) is more compatible than current bestMatch, 
+	//i.e. has smaller sumofDiff than current bestMatch.friendDifference
+	var bestMatch = {
+		name: "",
+		photo: "",
+		//start with an arbitrarily large number that is supplanted by any smaller sumOfDiff
+		friendDifference: 1000
+	};
 
-//use postData() as callback to prevent asynchrony conflicts
-function processData(mydata, infoArray, callback, res){
-	var numberOfQs = 3;
-	//array of sumOfDiff (see below). The user with the lowest sumOfDiff will be the most compatible.
-	var diffArray = [];
-
+	//the inner loop calculates the compatibility number (sumOfDiff) between two users, the current client and client in the db at index[i]
+	//the outer loop goes through each client in the db (infoArray) to determine which is most compatible with the current client
 	for (var i = 0; i < infoArray.length; i++){
 		
 		let sumOfDiff = 0;
@@ -68,48 +107,22 @@ function processData(mydata, infoArray, callback, res){
 			let currentQ = mydata.userScores[j];
 			//the score of the previous user[i] at question [j]
 			let arrayQ = infoArray[i].userScores[j];
-			//the absolute number of the difference between currentQ and arrayQ
+			//the absolute number of the difference between current user's Q response and that of the user in the DB
 			let differential = Math.abs(currentQ - arrayQ);
 			//the running total of the difference in scores in the responses given by the two users
 			sumOfDiff += differential;
 		}
-		diffArray.push(sumOfDiff);		
-	}
-	callback(diffArray, res);
+		//if client at infoArray[i] is more compatible with current client than the previous bestMatch, the latter becomes bestMatch
+		if (sumOfDiff < bestMatch.friendDifference){
+			bestMatch['name'] = infoArray[i].userName;
+			bestMatch['photo'] = infoArray[i].userPhoto;
+			bestMatch['friendDifference'] = sumOfDiff;
+
+			// console.log(bestMatch.friendDifference);
+		}	
+	}//END for loop
+	return bestMatch;
 };
-
-
-function displayDiffarray(diffArray, res){
-	console.log('array of differences: ' + diffArray);
-	
-	var lowestDiff = diffArray[0];
-
-	for (var i = 0; i < diffArray.length; i++){
-		if (diffArray[i] <= lowestDiff){
-			lowestDiff = diffArray[i];
-		}
-
-		if (i === diffArray.length){
-			let compatible = diffArray.indexOf(lowestDiff);
-			console.log(sentData);
-			sentData = infoArray[compatible];
-			// res.json(sentData);
-		}
-	}
-
-	// callback(diffArray, lowestDiff);
-
-	console.log('lowest diff: ' + lowestDiff);
-
-	console.log('index #: ' + diffArray.indexOf(lowestDiff));
-
-}
-
-// function displayIndex(diffArray, lowestDiff){
-// 	// console.log(diffArray.indexOf(lowestDiff));
-// 	var compatible = diffArray.indexOf(lowestDiff);
-// 	console.log(infoArray[compatible]);
-// }
 
 // require('./app/routing/api-routes.js')(app);
 // require('./app/routing/html-routes.js')(app);

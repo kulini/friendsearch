@@ -16,8 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true })); //support url-encoded bodies
 app.use(bodyParser.text());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
-//use available port. default to port 3000 unless otherwise specified.
-var PORT = process.env.PORT || 3000;
+//use available port. default to port 8000 unless otherwise specified.
+var PORT = process.env.PORT || 8000;
 
 //create a server listener for incoming requests from clients
 app.listen(PORT, function(){

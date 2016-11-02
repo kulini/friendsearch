@@ -1,9 +1,22 @@
-//run this function in response to http get request for the root directory
-app.get('/', function(req, res){
-	res.sendFile(__dirname + '/app/public/index.html');
-});
+var path = require('path');
 
-app.get('/survey', function(req, res){
-	res.sendFile(__dirname + '/app/public/survey.html');
-});
+module.exports = function(app){
+	app.get('/survey', function(req, res) {
+		res.sendFile(path.join(__dirname + '/../public/survey.html'));
+	});
 
+	app.get('/', function(req, res){
+		res.sendFile(path.join(__dirname + '/../public/index.html'));
+	});	
+
+	app.get('/api', function(req, res){
+		res.json(infoArray);
+	});
+
+	// app.use(express.static(__dirname + '/../public'));
+
+
+	app.use(function(req, res){
+		res.sendFile(path.join(__dirname + '/../public/index.html'));
+	});
+}

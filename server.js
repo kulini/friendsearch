@@ -10,6 +10,9 @@ var app = express();
 //database array of user info, imported from 'friends'
 var infoArray = friends;
 
+//static file server
+app.use(express.static('./app/public'));
+
 //parse POST requests
 app.use(bodyParser.json()); 	//support json bodies
 app.use(bodyParser.urlencoded({ extended: true })); //support url-encoded bodies

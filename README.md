@@ -1,1 +1,1 @@
-# friendsearch
+# Bowlmates, a friend matching service for dogs

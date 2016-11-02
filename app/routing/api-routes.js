@@ -44,14 +44,14 @@ module.exports = function(app){
 		//the outer loop goes through each client in the db (infoArray) to determine which is most compatible with the current client
 		for (var i = 0; i < infoArray.length; i++){
 			
-			let sumOfDiff = 0;
-			for (let j = 0; j< numberOfQs; j++){
+			var sumOfDiff = 0;
+			for (var j = 0; j< numberOfQs; j++){
 				//the score of the current user at question [j]
-				let currentQ = mydata.userScores[j];
+				var currentQ = mydata.userScores[j];
 				//the score of the previous user[i] at question [j]
-				let arrayQ = infoArray[i].userScores[j];
+				var arrayQ = infoArray[i].userScores[j];
 				//the absolute number of the difference between current user's Q response and that of the user in the DB
-				let differential = Math.abs(currentQ - arrayQ);
+				var differential = Math.abs(currentQ - arrayQ);
 				//the running total of the difference in scores in the responses given by the two users
 				sumOfDiff += differential;
 			}
